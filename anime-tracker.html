@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#0d0f1a">
+<title>متابع الأنمي</title>
+<style>
+:root{--bg:#0d0f1a;--card:#171a2b;--card2:#20243a;--tx:#eef0ff;--mut:#8b90b0;--ac:#8b5cf6;--ac2:#ec4899;--ok:#22c55e;--bad:#ef4444;color-scheme:dark;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+html,body{margin:0;height:100%;background:var(--bg);color:var(--tx);font-family:system-ui,-apple-system,"Segoe UI",Tahoma,sans-serif}
+#app{display:flex;flex-direction:column;height:100%;max-width:560px;margin:auto;position:relative}
+header{padding:14px 16px 6px}
+h1{margin:0;font-size:22px;background:linear-gradient(90deg,var(--ac),var(--ac2));-webkit-background-clip:text;background-clip:text;color:transparent}
+.sub{color:var(--mut);font-size:12px;margin-top:2px}
+.tabs{display:flex;gap:8px;overflow-x:auto;padding:10px 16px;scrollbar-width:none}
+.tabs::-webkit-scrollbar{display:none}
+.tab{flex:none;border:0;background:var(--card);color:var(--mut);padding:9px 14px;border-radius:20px;font:inherit;font-size:13px;transition:.25s;white-space:nowrap}
+.tab b{margin-inline-start:6px;background:#ffffff14;border-radius:10px;padding:1px 7px;font-size:11px}
+.tab.on{background:linear-gradient(90deg,var(--ac),var(--ac2));color:#fff;transform:scale(1.05);box-shadow:0 4px 16px #8b5cf655}
+#list{flex:1;overflow-y:auto;padding:6px 16px 100px;display:flex;flex-direction:column;gap:12px}
+.card{display:flex;gap:12px;background:var(--card);border-radius:18px;padding:10px;animation:in .35s ease both}
+@keyframes in{from{opacity:0;transform:translateY(14px) scale(.97)}to{opacity:1;transform:none}}
+.card.out{animation:out .25s ease forwards}
+@keyframes out{to{opacity:0;transform:translateX(-30px) scale(.9)}}
+.pic{flex:none;width:76px;height:106px;border-radius:12px;background:linear-gradient(135deg,var(--ac),var(--ac2));display:grid;place-items:center;font-size:30px;font-weight:700;overflow:hidden}
+.pic img{width:100%;height:100%;object-fit:cover}
+.info{flex:1;min-width:0;display:flex;flex-direction:column;justify-content:space-between}
+.name{font-weight:600;font-size:15px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;background:none;border:0;color:var(--tx);text-align:start;padding:0;font-family:inherit}
+.row{display:flex;align-items:center;justify-content:space-between;gap:8px}
+.ep{font-size:13px;color:var(--mut)}.ep b{color:var(--tx);font-size:18px;display:inline-block}
+.ep b.bump{animation:bump .3s}
+@keyframes bump{50%{transform:scale(1.5);color:var(--ac2)}}
+.btns{display:flex;gap:8px}
+.rb{width:38px;height:38px;border-radius:12px;border:0;background:var(--card2);color:var(--tx);font-size:22px;line-height:1;transition:.15s}
+.rb.p{background:linear-gradient(135deg,var(--ac),var(--ac2))}
+.rb:active{transform:scale(.85)}
+.bar{height:8px;background:var(--card2);border-radius:6px;overflow:hidden}
+.bar i{display:block;height:100%;width:0;background:linear-gradient(90deg,var(--ac),var(--ac2));border-radius:6px;transition:width .5s cubic-bezier(.2,.9,.3,1)}
+.bar i.done{background:var(--ok)}
+.pc{font-size:11px;color:var(--mut)}
+.empty{text-align:center;color:var(--mut);margin-top:60px;animation:in .4s both}
+.empty div{font-size:54px}
+#fab{position:absolute;inset-inline-start:20px;bottom:calc(20px + env(safe-area-inset-bottom,0px));width:58px;height:58px;border-radius:50%;border:0;background:linear-gradient(135deg,var(--ac),var(--ac2));color:#fff;font-size:32px;box-shadow:0 8px 24px #ec489966;transition:.2s}
+#fab:active{transform:scale(.88) rotate(90deg)}
+#ov{position:fixed;inset:0;background:#000a;opacity:0;pointer-events:none;transition:.25s;z-index:5}
+#ov.on{opacity:1;pointer-events:auto}
+#sheet{position:fixed;bottom:0;left:0;right:0;max-width:560px;margin:auto;background:var(--card);border-radius:24px 24px 0 0;padding:18px 18px calc(18px + env(safe-area-inset-bottom,0px));transform:translateY(105%);transition:transform .35s cubic-bezier(.2,.9,.3,1);z-index:6;max-height:92%;overflow-y:auto}
+#sheet.on{transform:none}
+#sheet h2{margin:0 0 12px;font-size:18px}
+label{display:block;font-size:12px;color:var(--mut);margin:10px 0 5px}
+input,select{width:100%;background:var(--card2);border:1px solid transparent;color:var(--tx);border-radius:12px;padding:12px;font:inherit;font-size:15px;outline:0;transition:.2s}
+input:focus,select:focus{border-color:var(--ac)}
+.fr{display:flex;gap:8px;margin-top:16px}
+.fr button{flex:1;border:0;border-radius:14px;padding:13px;font:inherit;font-weight:600;color:#fff;background:linear-gradient(90deg,var(--ac),var(--ac2))}
+.fr .del{flex:none;background:#ef444433;color:var(--bad);padding:13px 18px}
+.fr .cx{background:var(--card2);color:var(--mut)}
+.pk{font-size:12px;color:var(--ac);margin-top:6px;display:inline-block}
+.fr[hidden],.dc[hidden]{display:none}
+.dc{margin-top:16px;background:#ef444422;border:1px solid #ef444455;border-radius:16px;padding:14px;text-align:center;animation:in .25s both}
+.dc p{margin:0 0 12px;font-size:14px}
+.dc div{display:flex;gap:8px}
+.dc button{flex:1;border:0;border-radius:12px;padding:12px;font:inherit;font-weight:600;color:#fff;background:var(--bad)}
+.dc button.no{background:var(--card2);color:var(--mut)}
+</style>
+</head>
+<body>
+<div id="app">
+  <header><h1>🎌 متابع الأنمي</h1><div class="sub" id="sub"></div></header>
+  <nav class="tabs" id="tabs"></nav>
+  <main id="list"></main>
+  <button id="fab" aria-label="إضافة">+</button>
+</div>
+<div id="ov"></div>
+<div id="sheet">
+  <h2 id="ttl">إضافة أنمي</h2>
+  <label>اسم الأنمي</label><input id="fn" placeholder="مثال: Naruto">
+  <label>إجمالي عدد الحلقات</label><input id="ft" type="number" min="1" inputmode="numeric" placeholder="12">
+  <label>رابط الصورة الرمزية (اختياري)</label><input id="fi" type="url" placeholder="https://...">
+  <label class="pk">📁 أو اختر صورة من الجهاز<input id="ff" type="file" accept="image/*" hidden></label>
+  <label>القسم</label><select id="fc"></select>
+  <div class="dc" id="dc" hidden><p>⚠️ هل تريد حذف هذا الأنمي نهائياً؟</p><div><button id="dy">نعم، احذف</button><button class="no" id="dn">تراجع</button></div></div>
+  <div class="fr" id="fr"><button class="del" id="bd" hidden>🗑</button><button class="cx" id="bc">إلغاء</button><button id="bs">حفظ</button></div>
+</div>
+<script>
+const CATS=[["watching","📺","أشاهده حالياً"],["plan","🎯","سأشاهده"],["later","⏳","أكمله لاحقاً"],["no","❌","لا أريد مشاهدته"],["drop","🚫","لن أكمل مشاهدته"]];
+const KEY="anime_tracker_v1";
+let data=[],cur="watching",editId=null,img="";
+try{data=JSON.parse(localStorage.getItem(KEY)||"[]")}catch(e){data=[]}
+try{const t=localStorage.getItem(KEY+"_tab");if(t&&CATS.some(c=>c[0]===t))cur=t}catch(e){}
+const $=id=>document.getElementById(id);
+function save(){try{localStorage.setItem(KEY,JSON.stringify(data));localStorage.setItem(KEY+"_tab",cur)}catch(e){}}
+function vib(){try{navigator.vibrate&&navigator.vibrate(12)}catch(e){}}
+function esc(s){return String(s).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]))}
+$("fc").innerHTML=CATS.map(c=>`<option value="${c[0]}">${c[1]} ${c[2]}</option>`).join("");
+
+function renderTabs(){
+  $("tabs").innerHTML=CATS.map(c=>`<button class="tab ${c[0]===cur?"on":""}" data-c="${c[0]}">${c[1]} ${c[2]}<b>${data.filter(a=>a.cat===c[0]).length}</b></button>`).join("");
+  $("sub").textContent=`${data.length} أنمي • يعمل بدون إنترنت`;
+}
+function card(a){
+  const p=a.total?Math.min(100,Math.round(a.ep/a.total*100)):0;
+  const pic=a.img?`<img src="${esc(a.img)}" alt="" onerror="this.remove()">`:"";
+  return `<div class="card" data-id="${a.id}">
+    <div class="pic">${esc(a.name.trim().charAt(0).toUpperCase())}${pic?"":""}${pic}</div>
+    <div class="info">
+      <button class="name" data-edit="${a.id}">${esc(a.name)} ✎</button>
+      <div class="bar"><i class="${p>=100?"done":""}" style="width:0" data-w="${p}"></i></div>
+      <div class="row"><span class="pc">${p>=100?"✅ مكتمل":p+"%"}</span><span class="ep"><b>${a.ep}</b> / ${a.total}</span></div>
+      <div class="btns" style="justify-content:flex-end"><button class="rb" data-m="${a.id}">−</button><button class="rb p" data-p="${a.id}">+</button></div>
+    </div></div>`;
+}
+function render(anim=true){
+  renderTabs();
+  const l=data.filter(a=>a.cat===cur);
+  const c=CATS.find(x=>x[0]===cur);
+  $("list").innerHTML=l.length?l.map(card).join(""):`<div class="empty"><div>${c[1]}</div><p>لا يوجد أنمي في «${c[2]}»<br>اضغط + للإضافة</p></div>`;
+  requestAnimationFrame(()=>requestAnimationFrame(()=>document.querySelectorAll(".bar i").forEach(i=>i.style.width=i.dataset.w+"%")));
+  document.querySelectorAll(".card").forEach((e,i)=>e.style.animationDelay=(anim?i*45:0)+"ms");
+}
+function step(id,d){
+  const a=data.find(x=>x.id===id);if(!a)return;
+  const n=Math.max(0,Math.min(a.total,a.ep+d));if(n===a.ep)return;
+  a.ep=n;save();vib();
+  const el=document.querySelector(`.card[data-id="${id}"]`);if(!el)return;
+  const p=Math.round(a.ep/a.total*100);
+  const b=el.querySelector(".ep b");b.textContent=a.ep;b.classList.remove("bump");void b.offsetWidth;b.classList.add("bump");
+  const bar=el.querySelector(".bar i");bar.style.width=p+"%";bar.classList.toggle("done",p>=100);
+  el.querySelector(".pc").textContent=p>=100?"✅ مكتمل":p+"%";
+}
+function openSheet(id){
+  editId=id||null;const a=data.find(x=>x.id===id);
+  $("ttl").textContent=a?"تعديل الأنمي":"إضافة أنمي";
+  $("fn").value=a?a.name:"";$("ft").value=a?a.total:"";$("fi").value=a&&a.img&&!a.img.startsWith("data:")?a.img:"";
+  img=a&&a.img&&a.img.startsWith("data:")?a.img:"";
+  $("fc").value=a?a.cat:cur;$("bd").hidden=!a;showConfirm(false);
+  $("ov").classList.add("on");$("sheet").classList.add("on");
+}
+function showConfirm(v){$("dc").hidden=!v;$("fr").hidden=v}
+function closeSheet(){$("ov").classList.remove("on");$("sheet").classList.remove("on");showConfirm(false)}
+function submit(){
+  const name=$("fn").value.trim(),total=parseInt($("ft").value,10);
+  if(!name){$("fn").focus();return}
+  if(!total||total<1){$("ft").focus();return}
+  const url=$("fi").value.trim()||img,cat=$("fc").value;
+  if(editId){const a=data.find(x=>x.id===editId);Object.assign(a,{name,total,img:url,cat});a.ep=Math.min(a.ep,total)}
+  else data.unshift({id:"a"+Date.now().toString(36)+Math.random().toString(36).slice(2,5),name,total,ep:0,img:url,cat});
+  cur=cat;save();closeSheet();render();vib();
+}
+$("ff").onchange=e=>{
+  const f=e.target.files[0];if(!f)return;
+  const r=new FileReader();
+  r.onload=()=>{const im=new Image();im.onload=()=>{
+    const s=Math.min(1,240/Math.max(im.width,im.height)),c=document.createElement("canvas");
+    c.width=im.width*s;c.height=im.height*s;c.getContext("2d").drawImage(im,0,0,c.width,c.height);
+    img=c.toDataURL("image/jpeg",.8);$("fi").value="";$("fi").placeholder="✔ تم اختيار الصورة"};im.src=r.result};
+  r.readAsDataURL(f);
+};
+$("tabs").onclick=e=>{const t=e.target.closest(".tab");if(!t)return;cur=t.dataset.c;save();render();t.scrollIntoView({inline:"center",behavior:"smooth"})};
+$("list").onclick=e=>{
+  const t=e.target.closest("button");if(!t)return;
+  if(t.dataset.p)step(t.dataset.p,1);else if(t.dataset.m)step(t.dataset.m,-1);else if(t.dataset.edit)openSheet(t.dataset.edit);
+};
+$("fab").onclick=()=>openSheet();
+$("ov").onclick=closeSheet;$("bc").onclick=closeSheet;$("bs").onclick=submit;
+$("bd").onclick=()=>showConfirm(true);
+$("dn").onclick=()=>showConfirm(false);
+$("dy").onclick=()=>{
+  const id=editId;closeSheet();
+  const el=document.querySelector(`.card[data-id="${id}"]`);if(el)el.classList.add("out");
+  setTimeout(()=>{data=data.filter(x=>x.id!==id);save();render(false)},240);
+};
+render();
+</script>
+</body>
+</html>
